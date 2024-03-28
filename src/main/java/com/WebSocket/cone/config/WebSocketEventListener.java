@@ -11,26 +11,24 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class WebSocketEventListener {
 
-    private final SimpMessageSendingOperations messageTemplate;
+    private final SimpMessageSendingOperations messagingTemplate;
 
-    @EventListener  //Metodo que permite saber si un usuario a dejado la sesión
-    public void handleWebSocketDisconnectListener(
-            SessionDisconnectEvent event
-    ){
-        StompHeaderAccessor headerAccessor =StompHeaderAccessor.wrap(event.getMessage()); //Recibe mensaje del DisconnectEvent
+    @EventListener
+    public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String username = (String) headerAccessor.getSessionAttributes().get("username");
-        if(username != null){
-            log.info("El usuario esta desconectado: {}", username);
+        if (username != null) {
+            log.info("user disconnected: {}", username);
             var chatMessage = ChatMessage.builder()
                     .type(MessageType.LEAVE)
                     .sender(username)
                     .build();
-            //Informamos a todos los usuarios de la desconexión
-            messageTemplate.convertAndSend("/topic/public",chatMessage);
+            messagingTemplate.convertAndSend("/topic/public", chatMessage);
         }
     }
+
 }

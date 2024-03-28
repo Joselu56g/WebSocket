@@ -33,10 +33,10 @@ function connect(event) {
 
 
 function onConnected() {
-    // Subscribe to the Public Topic
+    // Se suscribe a topic Public
     stompClient.subscribe('/topic/public', onMessageReceived);
 
-    // Tell your username to the server
+    // Le dice al servidor tu usuario
     stompClient.send("/app/chat.addUser",
         {},
         JSON.stringify({sender: username, type: 'JOIN'})
@@ -47,7 +47,7 @@ function onConnected() {
 
 
 function onError(error) {
-    connectingElement.textContent = 'Could not connect to WebSocket server. Please refresh this page to try again!';
+    connectingElement.textContent = 'No se puedo conectar con el servidor del WebSocket. Por favor refresque y intente de nuevo!';
     connectingElement.style.color = 'red';
 }
 
@@ -74,10 +74,10 @@ function onMessageReceived(payload) {
 
     if(message.type === 'JOIN') {
         messageElement.classList.add('event-message');
-        message.content = message.sender + ' joined!';
+        message.content = message.sender + ' se unio!';
     } else if (message.type === 'LEAVE') {
         messageElement.classList.add('event-message');
-        message.content = message.sender + ' left!';
+        message.content = message.sender + ' se fue!';
     } else {
         messageElement.classList.add('chat-message');
 
